@@ -26,3 +26,7 @@ recibo
 le lanzo 
 
 salir 
+examinar <objeto>: Para ver la descripción de un objeto.
+coger <objeto>: Para mover un objeto de la sala al inventario del jugador.
+dejar <objeto>: Para mover un objeto del inventario a la sala.
+inventario: Para ver lo que llevas encima.
