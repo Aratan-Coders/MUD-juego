@@ -48,7 +48,7 @@ class NPC(Character):
         self.goals = data.get('goals', [])
         self.relationships = data.get('relationships', {})
         self.memory_log = data.get('memory_log', [])
-        
+        self.schedule = data.get('schedule', [])
         # Cada NPC tiene su propio cliente para hablar con la IA
         self.llm_client = OllamaClient()
 

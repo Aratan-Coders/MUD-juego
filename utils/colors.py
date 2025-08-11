@@ -1,6 +1,11 @@
 # utils/colors.py
 from colorama import Fore, Style
 
+import re
+
+def strip_colors(text):
+    """Elimina los códigos de color ANSI de un texto."""
+    return re.sub(r'\x1b\[[0-9;]*[mK]', '', text)
 # Definimos una paleta de colores para nuestro juego
 # Usaremos colores brillantes (BRIGHT) para que destaquen sobre un fondo oscuro
 

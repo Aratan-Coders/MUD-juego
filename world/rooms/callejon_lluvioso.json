@@ -1,0 +1,11 @@
+{
+  "id": "callejon_lluvioso",
+  "name": "Callejón Lluvioso",
+  "description": "Un callejón oscuro y estrecho...",
+  "exits": {
+    "bar": "el_coyote_cojo",
+    "coyote": "el_coyote_cojo",
+    "megadificio": "megabuilding_h10",  
+    "h10": "megabuilding_h10"
+  }
+}
