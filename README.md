@@ -21,7 +21,7 @@ decir
 
 pido
 
-recibo
+recibo, disoarar, escanear
 
 le lanzo 
 
