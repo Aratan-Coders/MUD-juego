@@ -1,0 +1,16 @@
+{
+  "id": "q001",
+  "name": "El Datapad Perdido",
+  "giver_id": "jackie_welles",
+  "stages": {
+    "1": {
+      "description": "Jackie me ha pedido que encuentre un datapad importante que se le 'cayó' en el callejón de al lado."
+    },
+    "2": {
+      "description": "Tengo el datapad corporativo. Debería devolvérselo a Jackie en El Coyote Cojo."
+    },
+    "3": {
+      "description": "Le he devuelto el datapad a Jackie. Me debe una."
+    }
+  }
+}

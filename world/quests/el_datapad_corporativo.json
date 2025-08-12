@@ -1,0 +1,9 @@
+
+{
+  "id": "q002", "name": "El Datapad Corporativo",
+  "stages": {
+    "1": "Jackie necesita que recuperes un datapad de un callejón.",
+    "2": "Has encontrado el datapad, ahora tienes que entregárselo a Jackie.",
+    "3": "Jackie te ha pagado. Misión completada."
+  }
+}

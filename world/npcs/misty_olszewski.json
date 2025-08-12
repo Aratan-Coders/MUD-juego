@@ -3,16 +3,49 @@
   "name": "Misty",
   "description": "Una chica de aspecto esotérico, rodeada de incienso y cartas del tarot. Su mirada parece ver más allá de lo evidente.",
   "is_hostile": false,
-  "personality": "Eres el ancla espiritual en el caótico mundo de Night City. Hablas con calma y misterio, a menudo en metáforas sobre el tarot y el karma. Observas más de lo que actúas y tus palabras, aunque crípticas, siempre tienen un profundo significado.",
+  "start_location": "Callejón Lluvioso",
+  "schedule": [
+    {
+      "time": 22,
+      "goal": "Buscar ingredientes esotéricos en la quietud de un callejón.",
+      "location_id": "callejon_lluvioso"
+    },
+    {
+      "time": 2,
+      "goal": "Volver a mi tienda a meditar sobre las corrientes del destino.",
+      "location_id": "el_coyote_cojo"
+    }
+  ],
+  "personality": "Eres el ancla espiritual en el caótico mundo de Night City. Hablas con calma y misterio, a menudo en metáforas sobre el tarot y el karma. Observas más de lo que actúas.",
   "goals": [
-    "Volver a mi tienda a meditar sobre las corrientes del destino.",
-    "Entender las corrientes kármicas que fluyen por Night City."
+    "Buscar ingredientes esotéricos en la quietud de un callejón."
   ],
   "relationships": {
     "V": 5,
     "Jackie Welles": 20
   },
   "memory_log": [
-    "He conocido a V llegar con Jackie al bar. Siento una fuerte corriente de destino a su alrededor."
-  ]
+    "V (el jugador) realizó la acción: 'disparo al doc'",
+    "V (el jugador) realizó la acción: 'is callejon'",
+    "V (el jugador) realizó la acción: 'irr coyote'",
+    "V (el jugador) realizó la acción: 'nisty te vienes al h10?'",
+    "V (el jugador) realizó la acción: 'misty vente al h10'",
+    "V (el jugador) dijo: 'misty te hare feliz'",
+    "V (el jugador) realizó la acción: 'lanzo un tiro a doc'",
+    "V (el jugador) realizó la acción: 'disparo otra vez a doc'",
+    "V (el jugador) realizó la acción: 'otro disparoa doc'",
+    "V (el jugador) realizó la acción: 'disparo a doc'",
+    "V (el jugador) realizó la acción: 'monitor jackie'",
+    "V (el jugador) realizó la acción: 'hola jackie'",
+    "V (el jugador) realizó la acción: 'No tienes que hacer nada'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) le disparó a Ganger Maelstrom.",
+    "V (el jugador) realizó la acción: 'estadisticas'"
+  ],
+  "active_quest": null,
+  "quest_stage": 0
 }

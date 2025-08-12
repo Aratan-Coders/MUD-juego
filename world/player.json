@@ -1,0 +1,28 @@
+{
+  "name": "V",
+  "description": "Un/a mercenario/a con la mirada de quien ha visto demasiado, pero que aún busca dejar su marca en Night City.",
+  
+  "stats": {
+    "Salud": 100,
+    "Reflejos": 5,
+    "Inteligencia": 5,
+    "Temple": 5
+  },
+
+  "skills": {
+    "Pistolas": 30,
+    "Persuasion": 20,
+    "Hacking": 15,
+    "Pelea": 25
+  },
+
+  "inventory": [
+    {
+      "id": "arma_basica",
+      "name": "Pistola Básica",
+      "description": "Una pistola barata pero fiable. Ha visto días mejores."
+    }
+  ],
+
+  "active_quests": []
+}

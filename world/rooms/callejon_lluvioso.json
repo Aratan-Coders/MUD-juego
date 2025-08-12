@@ -2,6 +2,7 @@
   "id": "callejon_lluvioso",
   "name": "Callejón Lluvioso",
   "description": "Un callejón oscuro y estrecho...",
+  "objects": ["datapad_roto", "datapad_corporativo"],
   "exits": {
     "bar": "el_coyote_cojo",
     "coyote": "el_coyote_cojo",

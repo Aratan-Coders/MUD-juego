@@ -1,11 +1,9 @@
-# Este fichero define la clase 'Room', por lo que no necesita importarla.
-# Solo importa las utilidades que usa, como los colores.
 from utils.colors import Colors, strip_colors
 
 class Room:
     """
     Representa una localización o sala en el mundo del juego.
-    Contiene a los personajes y gestiona los eventos que ocurren en ella.
+    Ahora también puede contener una lista de objetos.
     """
     def __init__(self, id, name, description, world):
         self.id = id
@@ -16,16 +14,32 @@ class Room:
         self.recent_events = []
         self.major_event_occurred = False
         self.exits = {}
+        # --- ¡CAMBIO AQUÍ! ---
+        self.objects = []
 
     def add_exit(self, direction, room_object):
         """Añade una salida desde esta sala a otra."""
         self.exits[direction] = room_object
 
+    # --- ¡NUEVOS MÉTODOS AÑADIDOS! ---
+    def add_object(self, obj):
+        """Añade un objeto a la lista de la sala."""
+        self.objects.append(obj)
+
+    def remove_object(self, obj):
+        """Quita un objeto de la lista de la sala (cuando un jugador lo coge)."""
+        if obj in self.objects:
+            self.objects.remove(obj)
+
     def get_description(self):
-        """Genera la descripción completa, ahora incluyendo las salidas."""
+        """
+        Genera la descripción completa de la sala, incluyendo ahora
+        los objetos que se pueden ver en ella.
+        """
         desc = f"\n{Colors.SYSTEM}--- {self.name} ---{Colors.RESET}\n"
         desc += f"{self.description}\n\n"
         
+        # Muestra los personajes en la sala
         other_characters = [c for c in self.characters if c.name != "V"]
         if other_characters:
             desc += "Ves a las siguientes personas aquí:\n"
@@ -34,6 +48,14 @@ class Room:
         else:
             desc += "Estás a solas.\n"
         
+        # --- ¡CAMBIO AQUÍ! ---
+        # Muestra los objetos visibles en la sala
+        if self.objects:
+            desc += "\nVes los siguientes objetos:\n"
+            for obj in self.objects:
+                desc += f"  - {obj['name']}\n"
+        
+        # Muestra las salidas
         if self.exits:
             desc += f"\n{Colors.SYSTEM}Salidas obvias: {', '.join(self.exits.keys())}{Colors.RESET}\n"
             

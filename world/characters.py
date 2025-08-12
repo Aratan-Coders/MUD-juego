@@ -15,78 +15,101 @@ class Character:
 
 class Player(Character):
     """
-    La clase que representa al jugador. Por ahora es simple, pero se puede expandir.
+    La clase que representa al jugador. Carga y guarda su estado, incluyendo
+    su inventario, estadísticas y un registro de sus misiones activas.
     """
-    def __init__(self, name, description="Te ves en un espejo roto. Eres tú."):
-        super().__init__(name, description)
+    def __init__(self, json_path='world/player/data.json'):
+        self.json_path = json_path
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            print(f"{Colors.HOSTILE}AVISO: No se encontró el fichero del jugador. Se creará uno nuevo.{Colors.RESET}")
+            data = {
+                "name": "V",
+                "description": "Un/a mercenario/a con la mirada de quien ha visto demasiado.",
+                "stats": {"Salud": 100, "Reflejos": 5, "Inteligencia": 5, "Temple": 5},
+                "skills": {"Pistolas": 30, "Persuasion": 20, "Hacking": 15, "Pelea": 25},
+                "inventory": [{"id": "arma_basica", "name": "Pistola Básica", "description": "Una pistola barata pero fiable."}],
+                "active_quests": []
+            }
+            self.save_state_data(data)
+
+        super().__init__(data['name'], data['description'])
+        
+        self.stats = data.get('stats', {})
+        self.skills = data.get('skills', {})
+        self.inventory = data.get('inventory', [])
+        self.active_quests = data.get('active_quests', [])
+
+    def save_state_data(self, data):
+        """Función interna para guardar un diccionario de datos en el fichero JSON."""
+        try:
+            os.makedirs(os.path.dirname(self.json_path), exist_ok=True)
+            with open(self.json_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"{Colors.HOSTILE}ERROR: No se pudo guardar el estado del jugador: {e}{Colors.RESET}")
+
+    def save_state(self):
+        """Construye el diccionario de estado actual y lo manda a guardar."""
+        current_state = {
+            "name": self.name, "description": self.description,
+            "stats": self.stats, "skills": self.skills,
+            "inventory": self.inventory, "active_quests": self.active_quests
+        }
+        self.save_state_data(current_state)
 
 class NPC(Character):
     """
-    Una clase compleja para Personajes No Jugadores.
-    Su personalidad, memoria y estado se cargan y guardan en un fichero JSON.
+    Una clase compleja para Personajes No Jugadores, cuya IA es dirigida por
+    su personalidad, memoria, metas y ahora, ¡misiones!
     """
     def __init__(self, json_path):
-        """
-        El constructor carga el estado inicial del NPC desde un fichero JSON.
-        """
         self.json_path = json_path
-        
         try:
             with open(json_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
         except FileNotFoundError:
             print(f"{Colors.HOSTILE}ERROR: No se encontró el fichero de personaje: {json_path}{Colors.RESET}")
-            # Salimos o creamos un estado por defecto para evitar un crash total
             data = {"name": "Entidad Perdida", "description": "Un error en la realidad."}
         
-        # Inicializamos los atributos base desde el fichero
         super().__init__(data['name'], data['description'])
         
-        # Cargamos los nuevos atributos de personalidad, memoria y metas
         self.personality = data.get('personality', 'No tengo personalidad definida.')
         self.is_hostile = data.get('is_hostile', False)
         self.goals = data.get('goals', [])
         self.relationships = data.get('relationships', {})
         self.memory_log = data.get('memory_log', [])
         self.schedule = data.get('schedule', [])
-        # Cada NPC tiene su propio cliente para hablar con la IA
+        # --- ¡CAMBIOS AQUÍ! ---
+        self.active_quest = data.get('active_quest', None)
+        self.quest_stage = data.get('quest_stage', 0)
+        # Cargamos las estadísticas y habilidades del NPC
+        self.stats = data.get('stats', {})
+        self.skills = data.get('skills', {})
         self.llm_client = OllamaClient()
 
-    def update_relationship(self, character_name, value):
-        """
-        Modifica la relación con otro personaje y la guarda.
-        Por ejemplo: `npc.update_relationship("V", -5)` si el jugador le ataca.
-        """
-        if character_name not in self.relationships:
-            self.relationships[character_name] = 0
-        self.relationships[character_name] += value
-        # print(f"{Colors.SYSTEM}Debug: Relación de {self.name} con {character_name} ahora es {self.relationships[character_name]}{Colors.RESET}")
-
-
     def add_memory(self, event_summary):
-        """
-        Añade un recuerdo al log de memoria del personaje.
-        Para evitar una memoria infinita, mantenemos solo los últimos 20 recuerdos.
-        """
         self.memory_log.append(event_summary)
-        
-        if len(self.memory_log) > 20:
-            self.memory_log.pop(0) # Elimina el recuerdo más antiguo
+        if len(self.memory_log) > 20: self.memory_log.pop(0)
 
     def save_state(self):
-        """
-        Guarda el estado actual completo del NPC (memoria, relaciones, etc.)
-        de vuelta a su fichero JSON, haciéndolo persistente.
-        """
+        """Guarda el estado completo del NPC, incluyendo el progreso de su misión."""
         state = {
             "id": self.name.lower().replace(" ", "_"),
             "name": self.name,
             "description": self.description,
             "is_hostile": self.is_hostile,
+            "start_location": self.room.name if self.room else "",
+            "schedule": self.schedule,
             "personality": self.personality,
             "goals": self.goals,
             "relationships": self.relationships,
-            "memory_log": self.memory_log
+            "memory_log": self.memory_log,
+            # --- ¡CAMBIOS AQUÍ! ---
+            "active_quest": self.active_quest,
+            "quest_stage": self.quest_stage
         }
         try:
             with open(self.json_path, 'w', encoding='utf-8') as f:
@@ -94,26 +117,11 @@ class NPC(Character):
         except Exception as e:
             print(f"{Colors.HOSTILE}ERROR: No se pudo guardar el estado para {self.name}: {e}{Colors.RESET}")
 
-
     def update(self):
-        """
-        El "latido" del NPC. Decide qué hacer basándose en su estado completo.
-        """
-        if not self.room:
-            return
-
-        # 1. Construye el prompt usando toda la información del personaje.
+        if not self.room: return
         prompt = build_npc_prompt(self, self.room)
-        
-        # 2. Obtiene la acción o diálogo desde el modelo de lenguaje.
         action_text = self.llm_client.generate_response(prompt).strip()
-        
-        # 3. Limpia y formatea la respuesta.
         action_text = action_text.replace('"', '').replace('*', '')
-        
-        # 4. Elige un color según la hostilidad.
         color = Colors.HOSTILE if self.is_hostile else Colors.NPC
-            
-        # 5. Crea y emite el mensaje final.
         message = f"{color}[{self.room.name}] {self.name} {action_text}{Colors.RESET}"
         self.room.broadcast(message)

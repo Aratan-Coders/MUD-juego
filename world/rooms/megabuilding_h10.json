@@ -2,6 +2,7 @@
   "id": "megabuilding_h10",
   "name": "Vestíbulo del Megadificio H10",
   "description": "El vestíbulo del H10 es un espacio cavernoso e impersonal, lleno del eco de miles de vidas anónimas. Paneles publicitarios parpadean con promesas de una vida mejor mientras guardias de seguridad con armadura observan a los transeúntes con aburrimiento. El aire huele a ozono y a fideos instantáneos. Una salida te lleva de vuelta a los sucios callejones de la ciudad.",
+  "objects": ["katana"],
   "exits": {
     "callejon": "callejon_lluvioso"
   }

@@ -3,17 +3,44 @@
   "name": "Doc Ryder",
   "description": "Un hombre demacrado con manos temblorosas pero precisas, manchadas de cromo y sangre sintética. Sus ojos ópticos zumban suavemente.",
   "is_hostile": false,
-  "personality": "Eres cínico, directo y estás cansado del mundo, pero tienes un estricto código profesional. No haces preguntas si el cliente paga. Valoras los componentes de calidad y odias a los chapuceros. Hablas en frases cortas y con jerga médica.",
+  "start_location": "El Coyote Cojo",
+  "schedule": [
+    {
+      "time": 21,
+      "goal": "Cerrar la clínica e ir al Coyote Cojo a por un trago. Necesito desconectar.",
+      "location_id": "el_coyote_cojo"
+    }
+  ],
+  "personality": "Eres cínico, directo y estás cansado del mundo, pero tienes un estricto código profesional. No haces preguntas si el cliente paga. Valoras los componentes de calidad.",
   "goals": [
-    "Cerrar la clínica e ir al Coyote Cojo a por un trago. Necesito desconectar.",
-    "Pagar el alquiler de mi clínica improvisada.",
-    "Que los Maelstrom dejen de robarme componentes."
+    "Cerrar la clínica e ir al Coyote Cojo a por un trago. Necesito desconectar."
   ],
   "relationships": {
     "V": 0,
     "Ganger Maelstrom": -10
   },
   "memory_log": [
-    "He oído que hay un nuevo mercenario en la ciudad, V, que podría necesitar mis servicios o traer problemas."
-  ]
+    "V (el jugador) realizó la acción: 'disparo al doc'",
+    "V (el jugador) realizó la acción: 'is callejon'",
+    "V (el jugador) realizó la acción: 'irr coyote'",
+    "V (el jugador) realizó la acción: 'nisty te vienes al h10?'",
+    "V (el jugador) realizó la acción: 'misty vente al h10'",
+    "V (el jugador) dijo: 'misty te hare feliz'",
+    "V (el jugador) realizó la acción: 'lanzo un tiro a doc'",
+    "V (el jugador) realizó la acción: 'disparo otra vez a doc'",
+    "V (el jugador) realizó la acción: 'otro disparoa doc'",
+    "V (el jugador) realizó la acción: 'disparo a doc'",
+    "V (el jugador) realizó la acción: 'monitor jackie'",
+    "V (el jugador) realizó la acción: 'hola jackie'",
+    "V (el jugador) realizó la acción: 'No tienes que hacer nada'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'preguntar a jackie sobre el datapad'",
+    "V (el jugador) realizó la acción: 'si'",
+    "V (el jugador) dijo: 'si'"
+  ],
+  "active_quest": null,
+  "quest_stage": 0
 }

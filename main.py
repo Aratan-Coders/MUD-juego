@@ -2,6 +2,7 @@ import asyncio
 import sys
 import glob
 import json
+import os
 import colorama
 from world.rooms import Room
 from world.characters import NPC, Player
@@ -21,25 +22,21 @@ world = {
 
 def setup_world():
     """
-    Crea el mundo cargando dinámicamente las salas y los NPCs desde
-    sus respectivos ficheros JSON, asegurando que las salidas se conecten.
-    Esta versión es más robusta y da más información durante la carga.
+    Crea el mundo cargando dinámicamente las salas, el jugador, los objetos y los NPCs
+    desde sus respectivos ficheros JSON.
     """
     print(f"{Colors.SYSTEM}Iniciando la carga del mundo...{Colors.RESET}")
     
-    # --- Carga de Salas desde 'world/rooms/' en DOS PASOS ---
-    room_path = 'world/rooms/*.json'
-    print(f"{Colors.SYSTEM}Buscando ficheros de sala en: '{room_path}'{Colors.RESET}")
+    # --- Carga de Salas desde 'world/rooms/' ---
+    room_path = os.path.join('world', 'rooms', '*.json')
     room_files = glob.glob(room_path)
-    print(f"{Colors.SYSTEM}Ficheros encontrados: {len(room_files)} -> {room_files}{Colors.RESET}")
+    print(f"{Colors.SYSTEM}Ficheros de sala encontrados: {len(room_files)}{Colors.RESET}")
     
     if not room_files:
-        print(f"{Colors.HOSTILE}FATAL: No se encontraron ficheros de sala en la carpeta 'world/rooms/'. El mundo no puede ser creado.{Colors.RESET}")
-        return False # Indicamos que la carga falló
+        print(f"{Colors.HOSTILE}FATAL: No se encontraron ficheros de sala. El mundo no puede ser creado.{Colors.RESET}")
+        return False
 
-    room_data_map = {} # Guardará los datos crudos del JSON para el segundo paso
-
-    # PASO 1: Crear todos los objetos Room para que existan en memoria.
+    room_data_map = {}
     for file_path in room_files:
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -47,7 +44,6 @@ def setup_world():
             room_obj = Room(data['id'], data['name'], data['description'], world)
             world['rooms'].append(room_obj)
 
-    # PASO 2: Ahora que todas las salas existen, conectamos sus salidas.
     for room_obj in world['rooms']:
         exit_data = room_data_map[room_obj.id].get('exits', {})
         for direction, target_room_id in exit_data.items():
@@ -57,19 +53,40 @@ def setup_world():
 
     print(f"{Colors.SYSTEM}Cargadas {len(world['rooms'])} salas y conectadas las salidas.{Colors.RESET}")
 
-    # --- Creación del Jugador y Colocación Inicial ---
-    player = Player("V")
+    # --- Creación del Jugador ---
+    player = Player()
     world["player"] = player
     start_room = next((r for r in world['rooms'] if r.id == 'el_coyote_cojo'), None)
-    if start_room:
-        player.room = start_room
-        start_room.add_character(player)
-    else:
-        print(f"{Colors.HOSTILE}FATAL: La sala de inicio con id 'el_coyote_cojo' no se encontró entre los ficheros JSON cargados. El jugador no puede ser colocado.{Colors.RESET}")
+    if not start_room:
+        print(f"{Colors.HOSTILE}FATAL: Sala de inicio 'el_coyote_cojo' no encontrada.{Colors.RESET}")
         return False
+    player.room = start_room
+    start_room.add_character(player)
+    print(f"{Colors.SYSTEM}Jugador '{player.name}' cargado y colocado en '{start_room.name}'.{Colors.RESET}")
+
+    # --- ¡CAMBIO IMPORTANTE AQUÍ! Carga de Objetos ---
+    object_files = glob.glob(os.path.join('world', 'objects', '*.json'))
+    # Creamos un mapa de todos los objetos disponibles en el mundo
+    world_objects = {}
+    for f in object_files:
+        obj_id = os.path.basename(f).replace('.json', '')
+        with open(f, 'r', encoding='utf-8') as obj_f:
+            world_objects[obj_id] = json.load(obj_f)
+
+    # Colocamos los objetos en las salas basándonos en los datos de la sala
+    for room_obj in world['rooms']:
+        room_data = room_data_map[room_obj.id]
+        if "objects" in room_data:
+            for obj_id in room_data["objects"]:
+                if obj_id in world_objects:
+                    # Usamos .copy() para que cada objeto sea único en la sala
+                    room_obj.add_object(world_objects[obj_id].copy())
+    print(f"{Colors.SYSTEM}Cargados y colocados {len(world_objects)} tipos de objetos.{Colors.RESET}")
+
 
     # --- Carga y Colocación Automática de NPCs ---
-    npc_files = glob.glob('world/npcs/*.json')
+    npc_path = os.path.join('world', 'npcs', '*.json')
+    npc_files = glob.glob(npc_path)
     print(f"{Colors.SYSTEM}Cargando {len(npc_files)} perfiles de personaje...{Colors.RESET}")
     for file_path in npc_files:
         try:
@@ -83,14 +100,14 @@ def setup_world():
                 target_room.add_character(npc)
                 print(f"{Colors.SYSTEM}  - '{npc.name}' cargado en '{target_room.name}'.{Colors.RESET}")
             else:
-                print(f"{Colors.HOSTILE}AVISO: No se pudo colocar al NPC de {file_path}. La sala '{location_name}' no existe o no fue cargada.{Colors.RESET}")
+                print(f"{Colors.HOSTILE}AVISO: No se pudo colocar NPC de {file_path}. La sala '{location_name}' no existe.{Colors.RESET}")
         except Exception as e:
             print(f"{Colors.HOSTILE}ERROR al procesar {file_path}: {e}{Colors.RESET}")
     
     print(f"{Colors.SYSTEM}...Mundo cargado. ¡Bienvenido a Night City, V!{Colors.RESET}")
     print("=====================================================")
     print(player.room.get_description())
-    return True # Indicamos que la carga fue exitosa
+    return True
 
 async def handle_player_input():
     loop = asyncio.get_running_loop()
@@ -100,19 +117,22 @@ async def handle_player_input():
         if not raw_input:
             print(f"\n{Colors.SYSTEM}Flujo de entrada cerrado. Iniciando apagado...{Colors.RESET}")
             loop.stop(); break
+
         if raw_input.strip().lower() == "salir":
             print(f"{Colors.SYSTEM}Guardando estado final...{Colors.RESET}")
+            world['player'].save_state()
             for npc in world['npcs']: npc.save_state()
             print(f"{Colors.SYSTEM}Conexión terminada.{Colors.RESET}")
             loop.stop(); break
+            
         if raw_input.strip():
             command_handler.execute(raw_input)
 
 async def main():
-    if not setup_world(): # Si la carga del mundo falla, no continuamos
-        print(f"{Colors.HOSTILE}La inicialización del mundo ha fallado. Revisa los ficheros y la configuración. El programa se cerrará.{Colors.RESET}")
+    if not setup_world():
+        print(f"{Colors.HOSTILE}La inicialización del mundo ha fallado. El programa se cerrará.{Colors.RESET}")
         return
-
+        
     master_ai = MasterAI()
     clock = GameClock(world, master_ai, tick_speed_seconds=30)
     

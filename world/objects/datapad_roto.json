@@ -1,0 +1,7 @@
+
+{
+  "id": "datapad_roto",
+  "name": "un datapad roto",
+  "description": "Una pantalla agrietada y una carcasa abollada. Parece que contiene datos corruptos.",
+  "can_be_taken": true
+}

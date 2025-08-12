@@ -1,0 +1,6 @@
+{
+  "id": "datapad_corporativo",
+  "name": "Datapad Corporativo",
+  "description": "Un datapad de alta gama, con la carcasa de magnesio ligeramente arañada. Parece contener datos encriptados de Militech.",
+  "can_be_taken": true
+}

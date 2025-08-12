@@ -2,8 +2,10 @@
   "id": "el_coyote_cojo",
   "name": "El Coyote Cojo",
   "description": "Un bar de mala muerte, de la familia de Jackie, con olor a alcohol barato y sueños rotos. La música rock atrona desde una gramola. La única salida visible es la puerta principal que da a la calle.",
+  "objects": ["whisky_antiguo"],
   "exits": {
     "callejon": "callejon_lluvioso",
     "calle": "callejon_lluvioso"
   }
+  
 }
